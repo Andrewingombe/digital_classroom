@@ -13,5 +13,21 @@ mongoose
   });
 
 // -------------------------------
-// Mngoose call backs
+// Mongoose call backs
 // -------------------------------
+mongoose.connection.on("connected", () => {
+  console.log("Mongoose has been connected to MongoDB");
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("Mongoose has been disconnected from MongoDB");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.log(err.message);
+});
+
+process.on("SIGINT", async () => {
+  await mongoose.connection.close();
+  process.exit(0);
+});
