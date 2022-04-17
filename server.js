@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
+const createError = require("http-errors");
 require("dotenv").config();
+require("./config/db");
 
 // -------------------------------
 // Initialise express app
@@ -19,6 +21,23 @@ app.use(morgan("dev"));
 // -------------------------------
 app.get("/", (req, res, next) => {
   res.status(200).json("Hello from express");
+});
+
+// -------------------------------
+// Error handlers
+// -------------------------------
+app.use(async (req, res, next) => {
+  next(createError.NotFound("Page has not been found"));
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send({
+    error: {
+      status: err.status || 500,
+      message: err.message,
+    },
+  });
 });
 
 // -------------------------------
