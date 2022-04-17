@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const createError = require("http-errors");
+const authRoutes = require("./routes/auth.routes");
 require("dotenv").config();
 require("./config/db");
 
@@ -19,6 +20,7 @@ app.use(morgan("dev"));
 // -------------------------------
 // Routes
 // -------------------------------
+app.use("/auth", authRoutes);
 app.get("/", (req, res, next) => {
   res.status(200).json("Hello from express");
 });
