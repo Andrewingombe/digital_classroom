@@ -1,9 +1,27 @@
+const createError = require("http-errors");
+const User = require("../models/users.model");
+
 // -------------------------------
 // Register users
 // -------------------------------
 module.exports.register_post = async (req, res, next) => {
+  const { email, password } = req.body;
   try {
-    res.json("Registered");
+    const doesExist = await User.findOne({ email: email });
+    if (doesExist)
+      throw createError.Conflict(
+        `The user with email: ${email}, has already been registered`
+      );
+
+    //register new user
+    const user = new User({
+      email,
+      password,
+    });
+
+    //save user details to database
+    const savedUser = await user.save();
+    res.status(201).json("User has been registered successfully");
   } catch (error) {
     next(error);
   }
