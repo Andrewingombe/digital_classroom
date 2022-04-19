@@ -37,5 +37,16 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+// -------------------------------
+// Use a custom mongoose method to verify the password given by the user
+// -------------------------------
+userSchema.methods.validatePassowrd = async function (password) {
+  try {
+    return await bcrypt.compare(password, this.password);
+  } catch (error) {
+    throw error;
+  }
+};
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;
