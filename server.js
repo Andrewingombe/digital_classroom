@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const createError = require("http-errors");
 const authRoutes = require("./routes/auth.routes");
 const cookieParser = require("cookie-parser");
+const { verifyAccessToken } = require("./helpers/jwt_helpers");
 require("dotenv").config();
 require("./config/db");
 
@@ -23,8 +24,8 @@ app.use(cookieParser());
 // Routes
 // -------------------------------
 app.use("/auth", authRoutes);
-app.get("/", (req, res, next) => {
-  res.status(200).json("Hello from express");
+app.get("/", verifyAccessToken, (req, res, next) => {
+  res.status(200).send("<h1>This is a private Page</h1>");
 });
 
 // -------------------------------

@@ -9,7 +9,7 @@ const createAccessToken = (id) => {
     jwt.sign(
       { id },
       process.env.ACCESSTOKEN_SECRET,
-      { expiresIn: "15m" },
+      { expiresIn: "1m" },
       (err, token) => {
         if (err) {
           console.log(err.message);
@@ -20,6 +20,19 @@ const createAccessToken = (id) => {
       }
     );
   });
+};
+
+// -------------------------------
+// Verify access token
+// -------------------------------
+const verifyAccessToken = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies;
+    console.log(refreshToken);
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 // -------------------------------
@@ -46,4 +59,5 @@ const createRefreshToken = (id) => {
 module.exports = {
   createAccessToken,
   createRefreshToken,
+  verifyAccessToken,
 };

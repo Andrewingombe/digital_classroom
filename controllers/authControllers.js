@@ -6,6 +6,8 @@ const {
 } = require("../helpers/jwt_helpers");
 const { authSchema } = require("../helpers/schemaValidation");
 
+const maxAge = 3 * 24 * 60 * 60;
+
 // -------------------------------
 // Register users
 // -------------------------------
@@ -30,7 +32,7 @@ module.exports.register_post = async (req, res, next) => {
     //create access tokens
     const accessToken = await createAccessToken(savedUser.id);
     const refreshToken = await createRefreshToken(savedUser.id);
-    res.cookie("refreshToken", refreshToken, { httpOnly: true });
+    res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(201).json({ accessToken, refreshToken });
   } catch (error) {
@@ -60,7 +62,7 @@ module.exports.login_post = async (req, res, next) => {
     //create access tokens
     const accessToken = await createAccessToken(user.id);
     const refreshToken = await createRefreshToken(user.id);
-    res.cookie("refreshToken", refreshToken, { httpOnly: true });
+    res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
