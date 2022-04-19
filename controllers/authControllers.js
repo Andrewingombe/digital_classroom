@@ -1,5 +1,9 @@
 const createError = require("http-errors");
 const User = require("../models/users.model");
+const {
+  createAccessToken,
+  createRefreshToken,
+} = require("../helpers/jwt_helpers");
 const { authSchema } = require("../helpers/schemaValidation");
 
 // -------------------------------
@@ -22,7 +26,13 @@ module.exports.register_post = async (req, res, next) => {
 
     //save user details to database
     const savedUser = await user.save();
-    res.status(201).json("User has been registered successfully");
+
+    //create access tokens
+    const accessToken = await createAccessToken(savedUser.id);
+    const refreshToken = await createRefreshToken(savedUser.id);
+    res.cookie("refreshToken", refreshToken, { httpOnly: true });
+
+    res.status(201).json({ accessToken, refreshToken });
   } catch (error) {
     if (error.isJoi === true) error.status = 422;
     next(error);
@@ -47,7 +57,12 @@ module.exports.login_post = async (req, res, next) => {
     const isValid = await user.validatePassowrd(password);
     if (!isValid) throw createError.Unauthorized("Invalid email/password");
 
-    res.status(200).json("Login successful");
+    //create access tokens
+    const accessToken = await createAccessToken(user.id);
+    const refreshToken = await createRefreshToken(user.id);
+    res.cookie("refreshToken", refreshToken, { httpOnly: true });
+
+    res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
     if (error.isJoi === true)
       return createError.BadRequest("Invalid email/password");
