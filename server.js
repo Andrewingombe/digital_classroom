@@ -24,7 +24,7 @@ app.use(cookieParser());
 // Routes
 // -------------------------------
 app.use("/auth", authRoutes);
-app.get("/", verifyAccessToken, (req, res, next) => {
+app.get("/", verifyAccessToken, async (req, res, next) => {
   res.status(200).send("<h1>This is a private Page</h1>");
 });
 

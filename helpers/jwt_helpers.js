@@ -25,14 +25,10 @@ const createAccessToken = (id) => {
 // -------------------------------
 // Verify access token
 // -------------------------------
-const verifyAccessToken = async (req, res, next) => {
-  try {
-    const refreshToken = req.cookies;
-    console.log(refreshToken);
-    next();
-  } catch (error) {
-    next(error);
-  }
+const verifyAccessToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  console.log(authHeader);
+  next();
 };
 
 // -------------------------------

@@ -6,6 +6,7 @@ const {
 } = require("../helpers/jwt_helpers");
 const { authSchema } = require("../helpers/schemaValidation");
 
+//calculate max age for cookie
 const maxAge = 3 * 24 * 60 * 60;
 
 // -------------------------------
