@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const createError = require("http-errors");
 const authRoutes = require("./routes/auth.routes");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const { verifyAccessToken } = require("./helpers/jwt_helpers");
 require("dotenv").config();
 require("./config/db");
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.use(cors());
 
 // -------------------------------
 // Routes
