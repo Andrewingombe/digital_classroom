@@ -1,15 +1,28 @@
 import React, { useState } from "react";
 // import { FaFacebookF, FaLinkedinIn, FaGoogle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleChange = () => {};
-
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log("Form submited!!!");
+
+    //make a fetch request to server to create a user
+    const response = await fetch("http://localhost:5000/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    navigate("/dashboard");
   };
 
   return (
@@ -41,7 +54,7 @@ const Register = () => {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={email}
-                onChange={handleChange}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -57,7 +70,7 @@ const Register = () => {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
-                onChange={handleChange}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
