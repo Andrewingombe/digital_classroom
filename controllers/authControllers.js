@@ -13,7 +13,7 @@ const maxAge = 3 * 24 * 60 * 60;
 // Register users
 // -------------------------------
 module.exports.register_post = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   try {
     const doesExist = await User.findOne({ email: email });
     if (doesExist)
@@ -23,6 +23,8 @@ module.exports.register_post = async (req, res, next) => {
 
     //register new user
     const user = new User({
+      firstName,
+      lastName,
       email,
       password,
     });
@@ -69,6 +71,7 @@ module.exports.login_post = async (req, res, next) => {
     //create access tokens
     const accessToken = await createAccessToken(user.id, user.role);
     const refreshToken = await createRefreshToken(user.id, user.role);
+
     res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(200).json({ accessToken, refreshToken });
