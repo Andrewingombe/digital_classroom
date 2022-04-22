@@ -66,8 +66,22 @@ const createRefreshToken = (id) => {
   });
 };
 
+// -------------------------------
+// Verify refresh access token
+// -------------------------------
+const verifyRefreshToken = (refreshToken) => {
+  return new Promise((reslolve, reject) => {
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESHTOKEN_SECRET,
+      (err, decoded) => {}
+    );
+  });
+};
+
 module.exports = {
   createAccessToken,
   createRefreshToken,
   verifyAccessToken,
+  verifyRefreshToken,
 };

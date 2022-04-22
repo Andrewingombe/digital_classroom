@@ -33,6 +33,12 @@ module.exports.register_post = async (req, res, next) => {
     //create access tokens
     const accessToken = await createAccessToken(savedUser.id, savedUser.role);
     const refreshToken = await createRefreshToken(savedUser.id, savedUser.role);
+
+    //save refresh token to the databse with user
+    savedUser.refreshToken = refreshToken;
+    const result = await savedUser.save();
+
+    //store refresh token in httpOnly cookie
     res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(201).json({ accessToken, refreshToken });
@@ -78,7 +84,8 @@ module.exports.login_post = async (req, res, next) => {
 // -------------------------------
 module.exports.refresh_get = async (req, res, next) => {
   try {
-    res.json("Token has been refreshed");
+    const refreshToken = req.cookies.jwt;
+    res.json({ refreshToken });
   } catch (error) {
     next(error);
   }

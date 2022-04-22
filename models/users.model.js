@@ -19,6 +19,7 @@ const userSchema = new Schema({
     enum: [roles.teacher, roles.student],
     default: roles.student,
   },
+  refreshToken: String,
 });
 
 // -------------------------------
