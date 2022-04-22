@@ -72,6 +72,11 @@ module.exports.login_post = async (req, res, next) => {
     const accessToken = await createAccessToken(user.id, user.role);
     const refreshToken = await createRefreshToken(user.id, user.role);
 
+    //save refresh token to the databse with user
+    user.refreshToken = refreshToken;
+    const result = await user.save();
+
+    //store refresh token in httpOnly cookie
     res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(200).json({ accessToken, refreshToken });
