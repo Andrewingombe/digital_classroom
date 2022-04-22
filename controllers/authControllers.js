@@ -31,8 +31,8 @@ module.exports.register_post = async (req, res, next) => {
     const savedUser = await user.save();
 
     //create access tokens
-    const accessToken = await createAccessToken(savedUser.id);
-    const refreshToken = await createRefreshToken(savedUser.id);
+    const accessToken = await createAccessToken(savedUser.id, savedUser.role);
+    const refreshToken = await createRefreshToken(savedUser.id, savedUser.role);
     res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(201).json({ accessToken, refreshToken });
@@ -61,8 +61,8 @@ module.exports.login_post = async (req, res, next) => {
     if (!isValid) throw createError.Unauthorized("Invalid email/password");
 
     //create access tokens
-    const accessToken = await createAccessToken(user.id);
-    const refreshToken = await createRefreshToken(user.id);
+    const accessToken = await createAccessToken(user.id, user.role);
+    const refreshToken = await createRefreshToken(user.id, user.role);
     res.cookie("jwt", refreshToken, { httpOnly: true, maxAge: maxAge * 1000 });
 
     res.status(200).json({ accessToken, refreshToken });

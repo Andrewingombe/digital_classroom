@@ -4,12 +4,12 @@ const createError = require("http-errors");
 // -------------------------------
 // Create access token
 // -------------------------------
-const createAccessToken = (id) => {
+const createAccessToken = (id, role) => {
   return new Promise((resolve, reject) => {
     jwt.sign(
-      { id },
+      { id, role },
       process.env.ACCESSTOKEN_SECRET,
-      { expiresIn: "1m" },
+      { expiresIn: "5m" },
       (err, token) => {
         if (err) {
           console.log(err.message);
@@ -26,9 +26,23 @@ const createAccessToken = (id) => {
 // Verify access token
 // -------------------------------
 const verifyAccessToken = (req, res, next) => {
+  //Check if bearer  token exits
+  if (!req.headers["authorization"]) return next(createError.Unauthorized());
   const authHeader = req.headers["authorization"];
-  console.log(authHeader);
-  next();
+  const bearerToken = authHeader.split(" ");
+  const token = bearerToken[1];
+
+  //verify access token
+  jwt.verify(token, process.env.ACCESSTOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      const message =
+        err.name === "JsonWebTokenError" ? "Unauthorized" : err.message;
+      return createError.Unauthorized(message);
+    }
+
+    req.user = decoded;
+    next();
+  });
 };
 
 // -------------------------------
@@ -39,7 +53,7 @@ const createRefreshToken = (id) => {
     jwt.sign(
       { id },
       process.env.REFRESHTOKEN_SECRET,
-      { expiresIn: "1y" },
+      { expiresIn: "3d" },
       (err, token) => {
         if (err) {
           console.log(err.message);

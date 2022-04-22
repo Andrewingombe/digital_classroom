@@ -29,6 +29,11 @@ userSchema.pre("save", async function (next) {
     if (this.isNew) {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
+
+      //Register as admin teacher
+      if (this.email === process.env.ADMIN_EMAIL.toLowerCase()) {
+        this.role = roles.teacher;
+      }
     }
 
     next();

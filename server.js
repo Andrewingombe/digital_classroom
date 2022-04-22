@@ -26,7 +26,9 @@ app.use(cors());
 // Routes
 // -------------------------------
 app.use("/auth", authRoutes);
-app.get("/", verifyAccessToken, async (req, res, next) => {
+
+app.use(verifyAccessToken);
+app.get("/", async (req, res, next) => {
   res.status(200).send("<h1>This is a private Page</h1>");
 });
 
